@@ -1202,11 +1202,12 @@ if __name__ == "__main__":
         server_port = int(os.getenv("SERVER_PORT", "7860"))
 
     server_name = args.server_name
-    if len(server_name) == 0:
-        server_name = os.getenv("SERVER_NAME", "localhost")
+    if len(server_name) == 0 or server_name == "localhost":
+        # Force binding to all interfaces for external access
+        server_name = os.getenv("SERVER_NAME", "0.0.0.0")
 
-        
     demo = create_demo()
+
     if args.open_browser:
         import webbrowser 
         if server_name.startswith("http"):
@@ -1215,6 +1216,7 @@ if __name__ == "__main__":
             url = "http://" + server_name 
         webbrowser.open(url + ":" + str(server_port), new = 0, autoraise = True)
 
+    print(f"Launching Gradio on {server_name}:{server_port}")  # Debug log
     demo.launch(server_name=server_name, server_port=server_port, share=args.share)
 
  
